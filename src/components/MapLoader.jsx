@@ -1,4 +1,4 @@
-// components/MapLoader.jsx
+// src/components/MapLoader.jsx
 import { useEffect } from "react";
 
 export default function MapLoader({ onLoad }) {
@@ -6,11 +6,11 @@ export default function MapLoader({ onLoad }) {
         const existingScript = document.getElementById("google-maps-script");
         if (existingScript) {
             if (existingScript.getAttribute("data-loaded") === "true") {
-                onLoad && onLoad();
+                onLoad?.();
             } else {
                 existingScript.addEventListener("load", () => {
                     existingScript.setAttribute("data-loaded", "true");
-                    onLoad && onLoad();
+                    onLoad?.();
                 });
             }
             return;
@@ -30,7 +30,7 @@ export default function MapLoader({ onLoad }) {
         script.setAttribute("data-loaded", "false");
         script.onload = () => {
             script.setAttribute("data-loaded", "true");
-            onLoad && onLoad();
+            onLoad?.();
         };
         document.head.appendChild(script);
     }, [onLoad]);

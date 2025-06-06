@@ -186,7 +186,7 @@ export default function WeatherDetails({ place }) {
         <div className="space-y-8">
             {/* Current Conditions Section */}
             <section>
-                <h2 className="text-xl font-semibold mb-2">Current Conditions</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-2">Current Conditions</h2>
                 {state.current ? (
                     // `state.current` is either the real obsJson (with temperature, etc. at top level)
                     // or the fake obs from hourlyToObs (already at top level).
@@ -200,7 +200,7 @@ export default function WeatherDetails({ place }) {
 
             {/* Alerts Section */}
             <section>
-                <h2 className="text-xl font-semibold mb-2">Alerts</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-2">Alerts</h2>
                 {state.alerts.length > 0 ? (
                     <Alerts data={state.alerts} />
                 ) : (
@@ -210,7 +210,7 @@ export default function WeatherDetails({ place }) {
 
             {/* Hourly Forecast Section */}
             <section>
-                <h2 className="text-xl font-semibold mb-2">Hourly Forecast</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-2">Hourly Forecast</h2>
                 {state.hourly.length > 0 ? (
                     <HourlyForecast data={state.hourly} />
                 ) : (
@@ -220,7 +220,7 @@ export default function WeatherDetails({ place }) {
 
             {/* Daily Forecast Section */}
             <section>
-                <h2 className="text-xl font-semibold mb-2">7-Day Forecast</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-2">7-Day Forecast</h2>
                 {state.daily.length > 0 ? (
                     <DailyForecast data={state.daily} />
                 ) : (

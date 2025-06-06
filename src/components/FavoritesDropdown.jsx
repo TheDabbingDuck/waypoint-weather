@@ -1,5 +1,5 @@
 // src/components/FavoritesDropdown.jsx
-import React, { useState, useRef, useEffect } from "react";
+import React, {useState, useRef, useEffect} from "react";
 
 /**
  * FavoritesDropdown displays a star icon that toggles a dropdown menu.
@@ -21,21 +21,18 @@ export default function FavoritesDropdown({
     // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(event.target)
-            ) {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
                 setOpen(false);
             }
         }
+
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
-    return (
-        <div className="relative" ref={containerRef}>
+    return (<div className="relative" ref={containerRef}>
             {/* Star Button */}
             <button
                 onClick={() => setOpen((prev) => !prev)}
@@ -46,8 +43,9 @@ export default function FavoritesDropdown({
             </button>
 
             {/* Dropdown Menu */}
-            {open && (
-                <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-20">
+            {open && (<div className="absolute mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-20
+      left-1/2 transform -translate-x-1/2
+      sm:right-0 sm:left-auto sm:transform-none">
                     <div className="p-2 border-b border-gray-200 flex justify-between items-center">
                         <span className="text-gray-700 font-medium">Favorites</span>
                         <button
@@ -61,11 +59,9 @@ export default function FavoritesDropdown({
                     </div>
 
                     {favorites.length === 0 ? (
-                        <div className="p-4 text-gray-500">No favorites yet.</div>
-                    ) : (
+                        <div className="p-4 text-gray-500">No favorites yet.</div>) : (
                         <ul className="max-h-48 overflow-y-auto">
-                            {favorites.map((fav) => (
-                                <li
+                            {favorites.map((fav) => (<li
                                     key={fav.placeId}
                                     className="flex justify-between items-center px-4 py-2 hover:bg-gray-100"
                                 >
@@ -91,12 +87,8 @@ export default function FavoritesDropdown({
                                     >
                                         ✕
                                     </button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            )}
-        </div>
-    );
+                                </li>))}
+                        </ul>)}
+                </div>)}
+        </div>);
 }

@@ -1,5 +1,5 @@
 // src/components/App.jsx
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import MapLoader from "./MapLoader";
 import SearchBar from "./SearchBar/SearchBar";
 import FavoritesDropdown from "./FavoritesDropdown";
@@ -41,8 +41,8 @@ export default function App() {
     }, [favorites]);
 
     // Called whenever a place is chosen (from search, recents, or favorites)
-    const handlePlaceSelect = ({ placeId, name, lat, lng }) => {
-        const place = { placeId, name, lat, lng };
+    const handlePlaceSelect = ({placeId, name, lat, lng}) => {
+        const place = {placeId, name, lat, lng};
         setSelectedPlace(place);
 
         // Update recents (prepend, dedupe, cap at 5)
@@ -76,15 +76,20 @@ export default function App() {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* 1. Load Google Maps */}
-            <MapLoader onLoad={() => setGoogleLoaded(true)} />
+            <MapLoader onLoad={() => setGoogleLoaded(true)}/>
 
             {/* 2. Fixed Header */}
             <header className="bg-white shadow-md fixed top-0 w-full z-10">
-                <div className="max-w-4xl mx-auto px-4 py-3 flex items-center space-x-4">
-                    <h1 className="text-xl font-semibold">WaypointWeather</h1>
+                <div
+                    className="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                    {/* On small: stack; on sm+: row */}
+
+                    <h1 className="text-xl font-semibold text-center sm:text-left">
+                        WaypointWeather
+                    </h1>
 
                     {/* Search Input */}
-                    <div className="flex-1">
+                    <div className="mt-2 w-full sm:mt-0 sm:flex-1">
                         <SearchBar
                             googleLoaded={googleLoaded}
                             onSelectPlace={handlePlaceSelect}
@@ -92,12 +97,14 @@ export default function App() {
                     </div>
 
                     {/* Favorites Dropdown */}
-                    <FavoritesDropdown
-                        favorites={favorites}
-                        onSelectFavorite={handleSelectFavorite}
-                        onAddFavorite={handleAddFavorite}
-                        onRemoveFavorite={handleRemoveFavorite}
-                    />
+                    <div className="mt-2 flex justify-center sm:mt-0 sm:w-auto">
+                        <FavoritesDropdown
+                            favorites={favorites}
+                            onSelectFavorite={handleSelectFavorite}
+                            onAddFavorite={handleAddFavorite}
+                            onRemoveFavorite={handleRemoveFavorite}
+                        />
+                    </div>
                 </div>
             </header>
 
@@ -109,7 +116,7 @@ export default function App() {
                     </div>
                 ) : (
                     <>
-                        <WeatherDetails place={selectedPlace} />
+                        <WeatherDetails place={selectedPlace}/>
                         <RecentsList
                             recents={recents}
                             onSelectRecent={handlePlaceSelect}

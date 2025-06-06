@@ -28,7 +28,7 @@ export default function HourlyForecast({ data }) {
                 return (
                     <div
                         key={number}
-                        className="flex-shrink-0 w-24 bg-white rounded-lg shadow p-2 flex flex-col items-center text-center"
+                        className="flex-shrink-0 min-w-[5.5rem] sm:w-24 bg-white rounded-lg shadow p-2 flex flex-col items-center text-center"
                     >
                         <span className="text-sm font-medium">{name}</span>
                         {icon && (

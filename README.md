@@ -1,70 +1,182 @@
-# Getting Started with Create React App
+# WaypointWeather
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+WaypointWeather is a React-based, client-side web app that lets users search for specific points of interest in the U.S. and view current weather conditions, hourly forecasts, 7-day forecasts, and active alerts for that location. Users can save favorites and see recent searches. Tailwind CSS is used for styling, and the app is deployed on GitHub Pages.
+
+---
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Development Setup](#development-setup)
+3. [Available Scripts](#available-scripts)
+4. [Troubleshooting](#troubleshooting)
+5. [Deployment](#deployment)
+6. [API Key Handling](#api-key-handling)
+
+---
+
+## Features
+
+* **Point-of-Interest Search**: Autocomplete search (Google Places) restricted to U.S. locations.
+* **Current Conditions**: Fetches latest observation from nearest NWS station; falls back to first hourly forecast if unavailable.
+* **Hourly Forecast**: Next 12 hours in a scrollable list.
+* **7-Day Forecast**: Responsive grid of daytime periods.
+* **Alerts**: Displays active NWS alerts or “No active alerts.”
+* **Favorites & Recents**: Save favorites (persistent) and view recent searches (session-only).
+* **Responsive Design**: Mobile-first layout with Tailwind’s responsive utilities.
+* **Static Deployment**: Hosted on GitHub Pages (no backend required).
+
+---
+
+## Development Setup
+
+### Prerequisites
+
+* Node.js (v16+)
+* npm (v8+)
+* Git
+
+### Clone & Install
+
+```bash
+git clone https://github.com/thedabbingduck/waypoint-weather.git
+cd waypoint-weather
+npm install
+```
+
+### Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```ini
+REACT_APP_GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
+```
+
+* Restrict this key in Google Cloud Console to `http://localhost:3000/*` and your GitHub Pages domain.
+* Ensure `.gitignore` includes `.env.local`.
+
+### Run Locally
+
+```bash
+npm start
+```
+
+* Opens at `http://localhost:3000`.
+
+### Folder Structure
+
+```
+waypointweather/
+├── public/              # Static assets
+├── src/
+│   ├── api/             # NWS API helpers
+│   ├── components/      # React components
+│   ├── index.js
+│   └── index.css        # Tailwind imports
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+---
 
 ## Available Scripts
 
-In the project directory, you can run:
+From project root:
 
-### `npm start`
+* `npm start`
+  Launches development server on `http://localhost:3000`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* `npm run build`
+  Builds production assets into `build/`.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* `npm run deploy`
+  Builds and publishes `build/` to the `gh-pages` branch (requires `gh-pages` package).
 
-### `npm test`
+* `npm run lint` (if configured)
+  Runs ESLint checks.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* `npm test` (if tests exist)
+  Runs test suite.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Troubleshooting
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* **Search Not Loading**:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    * Verify `REACT_APP_GOOGLE_MAPS_API_KEY` is valid and restricted to `localhost:3000`.
+    * Check DevTools Network for failed requests to `maps.googleapis.com`.
 
-### `npm run eject`
+* **Current Conditions Fallback**:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    * Ensure `User-Agent` header is set when fetching NWS data. In `src/api/nws.js`, use:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+      ```js
+      headers: {
+        "User-Agent": "WaypointWeather (your-email@example.com)",
+        Accept: "application/ld+json",
+      }
+      ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* **Favorites Not Persisting**:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    * Confirm browser allows `localStorage`.
+    * Check console logs for `Initialize favorites from localStorage:` and `Saved favorites to localStorage:`.
 
-## Learn More
+* **Build Failing**:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    * Use Node.js v16+ and run `npm ci`.
+    * Ensure `package.json` scripts are correct.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. Add `"homepage": "https://<your-github-username>.github.io/waypointweather"` to `package.json`.
+2. Add to `package.json` scripts:
 
-### Analyzing the Bundle Size
+   ```json
+   "predeploy": "npm run build",
+   "deploy": "gh-pages -d build"
+   ```
+3. Install `gh-pages`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+4. Push to GitHub, set Pages source to `gh-pages` branch (root).
+5. Run:
 
-### Making a Progressive Web App
+   ```bash
+   npm run deploy
+   ```
+6. Visit `https://<your-github-username>.github.io/waypointweather/`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## API Key Handling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* The Google Maps API key is exposed in the frontend bundle. To limit misuse:
 
-### Deployment
+    1. Restrict key to your allowed HTTP referrers (`localhost:3000`, GitHub Pages URL).
+    2. Restrict key’s API scope to “Maps JavaScript API” and “Places API.”
+    3. Regenerate the key if compromised.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* To fully hide the key, you’d need a proxy backend to sign requests, but that requires additional hosting.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contributing
+
+1. Fork or clone the repo.
+2. Create a branch for your feature/pr.
+3. Commit changes, open a PR with a clear description.
+4. Maintain Tailwind styling conventions (mobile-first, then `sm:`, `md:`).
+5. Run tests/lint before merging.
+
+---
+
+## License
+
+GNU GENERAL PUBLIC LICENSE © WaypointWeather

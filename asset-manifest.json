@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/waypoint-weather/static/css/main.b0f00310.css",
+    "main.js": "/waypoint-weather/static/js/main.8ee1264e.js",
+    "static/js/453.95c7c850.chunk.js": "/waypoint-weather/static/js/453.95c7c850.chunk.js",
+    "index.html": "/waypoint-weather/index.html",
+    "main.b0f00310.css.map": "/waypoint-weather/static/css/main.b0f00310.css.map",
+    "main.8ee1264e.js.map": "/waypoint-weather/static/js/main.8ee1264e.js.map",
+    "453.95c7c850.chunk.js.map": "/waypoint-weather/static/js/453.95c7c850.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b0f00310.css",
+    "static/js/main.8ee1264e.js"
+  ]
+}

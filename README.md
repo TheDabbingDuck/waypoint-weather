@@ -1,4 +1,4 @@
-# WaypointWeather
+# [WaypointWeather](https://thedabbingduck.github.io/waypoint-weather/)
 
 WaypointWeather is a React-based, client-side web app that lets users search for specific points of interest in the U.S. and view current weather conditions, hourly forecasts, 7-day forecasts, and active alerts for that location. Users can save favorites and see recent searches. Tailwind CSS is used for styling, and the app is deployed on GitHub Pages.
 
@@ -45,6 +45,8 @@ npm install
 ```
 
 ### Environment Variables
+Note - you will need to obtain your own (free) Google Maps API key to use the search 
+functionality locally. This can be done through the [Google Cloud Console](https://console.cloud.google.com/).
 
 Create a `.env.local` file in the project root:
 
@@ -52,7 +54,7 @@ Create a `.env.local` file in the project root:
 REACT_APP_GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
 ```
 
-* Restrict this key in Google Cloud Console to `http://localhost:3000/*` and your GitHub Pages domain.
+* Restrict this key in Google Cloud Console to `http://localhost:3000/*` for your own local testing.
 * Ensure `.gitignore` includes `.env.local`.
 
 ### Run Locally
@@ -91,14 +93,7 @@ From project root:
   Builds production assets into `build/`.
 
 * `npm run deploy`
-  Builds and publishes `build/` to the `gh-pages` branch (requires `gh-pages` package).
-
-* `npm run lint` (if configured)
-  Runs ESLint checks.
-
-* `npm test` (if tests exist)
-  Runs test suite.
-
+  Builds and publishes `build/` to the `gh-pages` branch.
 ---
 
 ## Troubleshooting
@@ -122,7 +117,7 @@ From project root:
 * **Favorites Not Persisting**:
 
     * Confirm browser allows `localStorage`.
-    * Check console logs for `Initialize favorites from localStorage:` and `Saved favorites to localStorage:`.
+    * Check console logs for output and errors.
 
 * **Build Failing**:
 
@@ -153,19 +148,9 @@ From project root:
    ```
 6. Visit `https://<your-github-username>.github.io/waypointweather/`.
 
----
-
-## API Key Handling
-
-* The Google Maps API key is exposed in the frontend bundle. To limit misuse:
-
-    1. Restrict key to your allowed HTTP referrers (`localhost:3000`, GitHub Pages URL).
-    2. Restrict key’s API scope to “Maps JavaScript API” and “Places API.”
-    3. Regenerate the key if compromised.
-
-* To fully hide the key, you’d need a proxy backend to sign requests, but that requires additional hosting.
 
 ---
+
 
 ## Contributing
 
@@ -179,4 +164,6 @@ From project root:
 
 ## License
 
-GNU GENERAL PUBLIC LICENSE © WaypointWeather
+GNU GENERAL PUBLIC LICENSE 
+
+© WaypointWeather 2025

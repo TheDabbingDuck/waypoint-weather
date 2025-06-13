@@ -10,8 +10,7 @@ WaypointWeather is a React-based, client-side web app that lets users search for
 2. [Development Setup](#development-setup)
 3. [Available Scripts](#available-scripts)
 4. [Troubleshooting](#troubleshooting)
-5. [Deployment](#deployment)
-6. [API Key Handling](#api-key-handling)
+5. [Contributing](#contributing)
 
 ---
 
@@ -123,31 +122,6 @@ From project root:
 
     * Use Node.js v16+ and run `npm ci`.
     * Ensure `package.json` scripts are correct.
-
----
-
-## Deployment
-
-1. Add `"homepage": "https://<your-github-username>.github.io/waypointweather"` to `package.json`.
-2. Add to `package.json` scripts:
-
-   ```json
-   "predeploy": "npm run build",
-   "deploy": "gh-pages -d build"
-   ```
-3. Install `gh-pages`:
-
-   ```bash
-   npm install --save-dev gh-pages
-   ```
-4. Push to GitHub, set Pages source to `gh-pages` branch (root).
-5. Run:
-
-   ```bash
-   npm run deploy
-   ```
-6. Visit `https://<your-github-username>.github.io/waypointweather/`.
-
 
 ---
 

@@ -1,5 +1,6 @@
 // src/components/Weather/CurrentConditions.jsx
 import React from "react";
+import { getWeatherIcon, getWeatherBackgroundClass } from "../../utils/weatherIcons";
 
 /**
  * Displays the latest observation (current conditions).
@@ -14,7 +15,6 @@ export default function CurrentConditions({ data, placeName }) {
         windDirection,
         textDescription,
         relativeHumidity,
-        // NWS sometimes provides an icon under properties, but for observations, we use textDescription
         timestamp,
     } = data;
 
@@ -44,35 +44,53 @@ export default function CurrentConditions({ data, placeName }) {
         })
         : "";
 
+    // Get custom weather icon based on the weather description
+    const weatherIcon = getWeatherIcon(textDescription);
+
+    // Get appropriate background color class based on weather and temperature
+    const bgColorClass = getWeatherBackgroundClass(textDescription, tempF);
+
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-2">
-                Current Conditions at {placeName}
-            </h2>
-            <p className="text-sm text-gray-500 mb-4">Last updated: {formattedTime}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className={`rounded-lg shadow-md p-6 ${bgColorClass} transition-colors duration-500`}>
+            <div className="flex flex-col sm:flex-row items-center mb-4">
+                <div className="mr-4 mb-4 sm:mb-0">
+                    <img
+                        src={weatherIcon}
+                        alt={textDescription || "Weather"}
+                        className="w-24 h-24"
+                    />
+                </div>
+                <div>
+                    <h2 className="text-xl font-semibold">
+                        Current Conditions at {placeName}
+                    </h2>
+                    <p className="text-sm text-gray-600">Last updated: {formattedTime}</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
                 {tempF != null && (
-                    <div className="flex flex-col items-center">
-                        <span className="text-3xl font-bold">{tempF}°F</span>
-                        <span className="text-sm text-gray-600">Temperature</span>
+                    <div className="flex flex-col items-center bg-white bg-opacity-80 rounded-lg p-4 shadow-sm">
+                        <span className="text-4xl font-bold text-blue-600">{tempF}°F</span>
+                        <span className="text-sm text-gray-600 mt-2">Temperature</span>
                     </div>
                 )}
                 {textDescription && (
-                    <div className="flex flex-col items-center">
-                        <span className="text-lg">{textDescription}</span>
-                        <span className="text-sm text-gray-600">Conditions</span>
+                    <div className="flex flex-col items-center bg-white bg-opacity-80 rounded-lg p-4 shadow-sm">
+                        <span className="text-lg font-medium">{textDescription}</span>
+                        <span className="text-sm text-gray-600 mt-2">Conditions</span>
                     </div>
                 )}
                 {wind && (
-                    <div className="flex flex-col items-center">
-                        <span className="text-lg">{wind}</span>
-                        <span className="text-sm text-gray-600">Wind</span>
+                    <div className="flex flex-col items-center bg-white bg-opacity-80 rounded-lg p-4 shadow-sm">
+                        <span className="text-lg font-medium">{wind}</span>
+                        <span className="text-sm text-gray-600 mt-2">Wind</span>
                     </div>
                 )}
                 {humidity && (
-                    <div className="flex flex-col items-center">
-                        <span className="text-lg">{humidity}</span>
-                        <span className="text-sm text-gray-600">Humidity</span>
+                    <div className="flex flex-col items-center bg-white bg-opacity-80 rounded-lg p-4 shadow-sm">
+                        <span className="text-lg font-medium">{humidity}</span>
+                        <span className="text-sm text-gray-600 mt-2">Humidity</span>
                     </div>
                 )}
             </div>

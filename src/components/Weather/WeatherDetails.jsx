@@ -183,50 +183,45 @@ export default function WeatherDetails({ place }) {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
             {/* Current Conditions Section */}
-            <section>
-                <h2 className="text-lg sm:text-xl font-semibold mb-2">Current Conditions</h2>
-                {state.current ? (
-                    // `state.current` is either the real obsJson (with temperature, etc. at top level)
-                    // or the fake obs from hourlyToObs (already at top level).
+            {state.current && (
+                <section className="weather-card">
+                    <h2 className="weather-card-header">Current Conditions</h2>
                     <CurrentConditions data={state.current} placeName={place.name} />
-                ) : (
-                    <p className="text-gray-600">
-                        Current observations unavailable.
-                    </p>
-                )}
-            </section>
+                </section>
+            )}
 
             {/* Alerts Section */}
-            <section>
-                <h2 className="text-lg sm:text-xl font-semibold mb-2">Alerts</h2>
-                {state.alerts.length > 0 ? (
+            {state.alerts.length > 0 && (
+                <section className="weather-card">
+                    <h2 className="weather-card-header">Active Alerts</h2>
                     <Alerts data={state.alerts} />
-                ) : (
-                    <p className="text-gray-600">No active alerts.</p>
-                )}
-            </section>
+                </section>
+            )}
 
             {/* Hourly Forecast Section */}
-            <section>
-                <h2 className="text-lg sm:text-xl font-semibold mb-2">Hourly Forecast</h2>
-                {state.hourly.length > 0 ? (
+            {state.hourly.length > 0 && (
+                <section className="weather-card">
+                    <h2 className="weather-card-header">Hourly Forecast</h2>
                     <HourlyForecast data={state.hourly} />
-                ) : (
-                    <p className="text-gray-600">Hourly forecast unavailable.</p>
-                )}
-            </section>
+                </section>
+            )}
 
             {/* Daily Forecast Section */}
-            <section>
-                <h2 className="text-lg sm:text-xl font-semibold mb-2">7-Day Forecast</h2>
-                {state.daily.length > 0 ? (
+            {state.daily.length > 0 && (
+                <section className="weather-card">
+                    <h2 className="weather-card-header">7-Day Forecast</h2>
                     <DailyForecast data={state.daily} />
-                ) : (
-                    <p className="text-gray-600">7-day forecast unavailable.</p>
-                )}
-            </section>
+                </section>
+            )}
+
+            {/* Fallback if no data is available for any section */}
+            {!state.current && state.alerts.length === 0 && state.hourly.length === 0 && state.daily.length === 0 && (
+                 <div className="weather-card text-center">
+                     <p className="text-gray-600 py-8">No weather data available for this location.</p>
+                 </div>
+            )}
         </div>
     );
 }

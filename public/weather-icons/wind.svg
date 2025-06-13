@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="windGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E0E0E0" />
+      <stop offset="100%" stop-color="#A0A0A0" />
+    </linearGradient>
+  </defs>
+  <path d="M10,30 C20,30 25,25 35,25 C45,25 50,30 50,30" stroke="url(#windGradient)" stroke-width="6" stroke-linecap="round" fill="none" />
+  <path d="M5,45 C15,45 25,40 35,40 C55,40 60,45 75,45" stroke="url(#windGradient)" stroke-width="6" stroke-linecap="round" fill="none" />
+  <path d="M20,60 C30,60 35,55 45,55 C65,55 70,60 85,60" stroke="url(#windGradient)" stroke-width="6" stroke-linecap="round" fill="none" />
+</svg>
+

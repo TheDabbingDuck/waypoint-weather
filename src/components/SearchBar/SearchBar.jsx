@@ -1,71 +1,107 @@
 // src/components/SearchBar/SearchBar.jsx
 import { useEffect, useRef, useState } from "react";
 
-export default function SearchBar({ googleLoaded, onSelectPlace }) {
-    // We’ll attach the PlaceAutocompleteElement into this div.
-    const containerRef = useRef(null);
-    const [autocompleteElement, setAutocompleteElement] = useState(null);
+// Custom debounce hook
+function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
-        if (!googleLoaded || autocompleteElement) return;
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
 
-        // Wrap in an async IIFE so we can await importLibrary
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
+export default function SearchBar({ googleLoaded, onSelectPlace }) {
+    const containerRef = useRef(null);
+    const autocompleteElementRef = useRef(null); // Ref for the Web Component instance
+    const [currentInputValue, setCurrentInputValue] = useState("");
+    // Using a 750ms delay for a slightly better user experience with typing pauses
+    const debouncedInputValue = useDebounce(currentInputValue, 750);
+
+    useEffect(() => {
+        if (!googleLoaded || !containerRef.current || autocompleteElementRef.current) {
+            // If google is not loaded, or container is not ready, or element already created, do nothing.
+            return;
+        }
+
         (async () => {
             try {
-                // Import the "places" library to get PlaceAutocompleteElement
                 const placesLib = await window.google.maps.importLibrary("places");
                 const { PlaceAutocompleteElement } = placesLib;
 
-                // Create a new PlaceAutocompleteElement (Web Component)
-                const element = new PlaceAutocompleteElement();
-
-                // (Optional) You can tweak styling on the element itself—
-                // e.g., element.style.width = "100%"; to make it full-width.
+                const element = new PlaceAutocompleteElement({
+                    inputMode: 'input-only', // Take manual control over when predictions are requested
+                });
                 element.style.width = "100%";
                 element.style.boxSizing = "border-box";
+                // Consider adding a placeholder via styling the ::part(input) or if the component supports it directly.
+                // element.placeholder = "Enter a location"; // This might not be a direct property
 
-                // Append it into our container <div>
-                if (containerRef.current) {
-                    containerRef.current.appendChild(element);
-                }
+                element.addEventListener('input', (event) => {
+                    setCurrentInputValue(event.target.value);
+                });
 
-                // Listen for a place being selected via "gmp-select"
                 element.addEventListener("gmp-select", async (event) => {
                     try {
                         const prediction = event.placePrediction;
-                        // Convert prediction to a Place object
                         const place = prediction.toPlace();
-
-                        // Fetch exactly the fields we need
                         await place.fetchFields({
                             fields: ["displayName", "formattedAddress", "location"],
                         });
-
                         const lat = place.location.lat();
                         const lng = place.location.lng();
-                        const displayName =
-                            place.displayName || place.formattedAddress || "";
-
+                        const displayName = place.displayName || place.formattedAddress || "";
                         onSelectPlace({
                             placeId: prediction.placeId,
                             name: displayName,
                             lat,
                             lng,
                         });
+                        // Clear input after selection
+                        setCurrentInputValue("");
+                        if (autocompleteElementRef.current) {
+                            autocompleteElementRef.current.value = "";
+                        }
                     } catch (innerErr) {
                         console.error("Error fetching place details:", innerErr);
                     }
                 });
 
-                setAutocompleteElement(element);
+                // Clear the container before appending (e.g., if there was a "Loading..." message)
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = '';
+                    containerRef.current.appendChild(element);
+                }
+                autocompleteElementRef.current = element;
+
             } catch (err) {
-                console.error(
-                    "Error initializing PlaceAutocompleteElement:",
-                    err
-                );
+                console.error("Error initializing PlaceAutocompleteElement:", err);
             }
         })();
-    }, [googleLoaded, autocompleteElement, onSelectPlace]);
+
+    }, [googleLoaded, onSelectPlace]); // Effect runs when googleLoaded or onSelectPlace changes
+
+    // Effect to handle debounced input value changes
+    useEffect(() => {
+        if (autocompleteElementRef.current && debouncedInputValue !== autocompleteElementRef.current.value) {
+            if (debouncedInputValue.trim() !== "") {
+                autocompleteElementRef.current.value = debouncedInputValue;
+                autocompleteElementRef.current.requestPredictions();
+            } else {
+                // If the debounced input is empty, clear the autocomplete element's value.
+                // The PlaceAutocompleteElement should ideally clear its own suggestions then.
+                autocompleteElementRef.current.value = "";
+                // If it doesn't clear suggestions, one might need to find a method on the element to do so.
+            }
+        }
+    }, [debouncedInputValue]);
 
     return (
         <div
@@ -76,16 +112,15 @@ export default function SearchBar({ googleLoaded, onSelectPlace }) {
                     : ""
             }`}
             style={{
-                minHeight: "2.5rem", // ensure there’s vertical space for the web component
+                minHeight: "2.5rem", // Ensure space for the input/autocomplete
             }}
         >
-            {!googleLoaded && (
+            {!googleLoaded && !autocompleteElementRef.current && (
                 <div className="px-3 py-2 text-gray-500">
                     Loading Google Maps...
                 </div>
             )}
-            {/* Once googleLoaded & autocompleteElement are set, the actual <gmp-place-autocomplete>
-          will be appended under this div automatically. */}
+            {/* The PlaceAutocompleteElement is appended here by the useEffect hook */}
         </div>
     );
 }

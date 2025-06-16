@@ -9,7 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f0f4f8; /* Added a light global background */
+  background-color: #f0f4f8; /* Light global background */
 }
 
 code {
@@ -28,8 +28,32 @@ code {
 /* Custom card styling */
 .weather-card {
   @apply bg-white rounded-xl shadow-lg p-4 sm:p-6 transition-all duration-300 ease-in-out;
+  /* General animation for cards if not overridden by more specific inline styles */
+  /* animation: fadeInUp 0.6s ease-out backwards; */
 }
 
 .weather-card-header {
   @apply text-xl sm:text-2xl font-semibold text-gray-700 mb-3 sm:mb-4 pb-2 border-b border-gray-200;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-current-animation {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Add a class for general section fade-in if desired,
+   can be applied to the <section> elements in WeatherDetails.jsx */
+.section-fade-in {
+    animation: fadeInUp 0.7s ease-out backwards;
 }

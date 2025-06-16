@@ -37,7 +37,7 @@ function formatHourlyTime(dateString) {
  * @param {{ data: Array }} props
  */
 export default function HourlyForecast({ data }) {
-    const nextHours = data.slice(0, 12);
+    const nextHours = data.slice(0, 24); // Show up to 24 hours
     const scrollContainerRef = useRef(null);
     const [showScrollIndicators, setShowScrollIndicators] = useState({ left: false, right: false });
 
@@ -78,36 +78,37 @@ export default function HourlyForecast({ data }) {
                 ref={scrollContainerRef}
                 className="flex overflow-x-auto space-x-4 py-2 pb-4 hide-scrollbar"
             >
-                {nextHours.map((hour) => {
+                {nextHours.map((hour, index) => {
                     const {
                         number,
                         startTime,
                         temperature,
                         temperatureUnit,
+                        probabilityOfPrecipitation, // Added
                         windSpeed,
                         windDirection,
                         shortForecast,
                     } = hour;
                     const formattedTime = formatHourlyTime(startTime);
                     const weatherIcon = getWeatherIcon(shortForecast);
+                    const pop = probabilityOfPrecipitation?.value;
+
                     return (
                         <div
-                            key={number}
-                            className="flex-shrink-0 min-w-[8rem] sm:w-28 bg-white rounded-lg shadow-md p-3 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-200"
+                            key={number || `hourly-${index}`}
+                            className="flex-shrink-0 min-w-[8.5rem] sm:w-36 bg-white rounded-lg shadow-lg p-3 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            style={{ animation: `fadeInUp 0.5s ${index * 0.05}s ease-out backwards` }} // Staggered animation
                         >
-                            <span className="text-sm font-medium mb-1">{formattedTime}</span>
-                            <img
-                                src={weatherIcon}
-                                alt={shortForecast}
-                                className="w-16 h-16 my-2"
-                            />
-                            <span className="text-lg font-semibold mt-1">
-                                {temperature}°{temperatureUnit}
-                            </span>
-                            <span className="text-xs text-gray-600 mt-1">{shortForecast}</span>
+                            <span className="text-sm font-medium text-gray-700 mb-1">{formattedTime}</span>
+                            <img src={weatherIcon} alt={shortForecast} className="w-16 h-16 my-2" />
+                            <span className="text-xl font-bold text-blue-600 mt-1">{temperature}°{temperatureUnit}</span>
+                            {pop !== null && pop >= 0 && (
+                                <span className="text-xs text-blue-500 mt-1">Precipitation Chance: {pop}%</span>
+                            )}
+                            <span className="text-xs text-gray-600 mt-1 px-1 leading-tight">{shortForecast}</span>
                             {windSpeed && (
-                                <span className="text-xs text-gray-500 mt-2">
-                                    {windSpeed.replace(/[^0-9to ]/g, "")} {windDirection || ""}
+                                <span className="text-xs text-gray-500 mt-1.5">
+                                    {windSpeed.replace(/[^0-9to\s]/g, "")} {windDirection || ""}
                                 </span>
                             )}
                         </div>

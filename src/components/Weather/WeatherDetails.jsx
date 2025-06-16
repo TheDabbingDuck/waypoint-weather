@@ -183,8 +183,9 @@ export default function WeatherDetails({ place }) {
     }
 
     return (
-        <div className="space-y-6 sm:space-y-8">
-            {/* Current Conditions Section */}
+        // Changed background to bg-slate-300 for more contrast with white cards
+        <div className="bg-slate-300 p-4 sm:p-6 rounded-xl shadow-lg space-y-6 sm:space-y-8">
+            {/* Current Conditions Section - will be a white card inside this container */}
             {state.current && (
                 <section className="weather-card">
                     <h2 className="weather-card-header">Current Conditions</h2>
@@ -192,7 +193,7 @@ export default function WeatherDetails({ place }) {
                 </section>
             )}
 
-            {/* Alerts Section */}
+            {/* Alerts Section - will be a white card (or styled differently) inside */}
             {state.alerts.length > 0 && (
                 <section className="weather-card">
                     <h2 className="weather-card-header">Active Alerts</h2>
@@ -200,7 +201,7 @@ export default function WeatherDetails({ place }) {
                 </section>
             )}
 
-            {/* Hourly Forecast Section */}
+            {/* Hourly Forecast Section - will be a white card inside */}
             {state.hourly.length > 0 && (
                 <section className="weather-card">
                     <h2 className="weather-card-header">Hourly Forecast</h2>
@@ -208,7 +209,7 @@ export default function WeatherDetails({ place }) {
                 </section>
             )}
 
-            {/* Daily Forecast Section */}
+            {/* Daily Forecast Section - will be a white card inside */}
             {state.daily.length > 0 && (
                 <section className="weather-card">
                     <h2 className="weather-card-header">7-Day Forecast</h2>
@@ -218,7 +219,7 @@ export default function WeatherDetails({ place }) {
 
             {/* Fallback if no data is available for any section */}
             {!state.current && state.alerts.length === 0 && state.hourly.length === 0 && state.daily.length === 0 && (
-                 <div className="weather-card text-center">
+                 <div className="weather-card text-center"> {/* This will also be a white card */}
                      <p className="text-gray-600 py-8">No weather data available for this location.</p>
                  </div>
             )}

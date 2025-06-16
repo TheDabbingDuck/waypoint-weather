@@ -29,7 +29,7 @@ export default function FavoritesDropdown({
         <div className="relative" ref={containerRef}>
             <button
                 onClick={() => setOpen((prev) => !prev)}
-                className="flex items-center px-3 py-2 bg-yellow-400 text-white rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-colors duration-150 shadow hover:shadow-md"
+                className="flex items-center px-3 py-2 bg-white text-sky-700 rounded-md hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300 transition-colors duration-150 shadow hover:shadow-md"
                 aria-label="Toggle Favorites Menu"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2" fill="currentColor" viewBox="0 0 24 24">

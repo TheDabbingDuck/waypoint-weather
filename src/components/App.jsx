@@ -56,24 +56,24 @@ export default function App() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col">
+        <div className="min-h-screen bg-slate-100 flex flex-col">
             {/* 1. Load Google Maps */}
             <MapLoader onLoad={() => setGoogleLoaded(true)}/>
 
             {/* 2. Fixed Header */}
-            <header className="bg-white shadow-lg sticky top-0 w-full z-20">
+            <header className="bg-sky-700 shadow-lg sticky top-0 w-full z-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col sm:flex-row justify-between items-center py-3 sm:py-4">
-                        {/* Title - Clickable to clear selection */}
                         <button onClick={handleClearSelectedPlace} className="focus:outline-none">
-                            <h1 className="text-3xl font-bold text-blue-600 hover:text-blue-700 transition-colors duration-150 cursor-pointer">
+                            <h1 className="text-3xl font-bold text-white hover:text-sky-100 transition-colors duration-150 cursor-pointer">
                                 WaypointWeather
                             </h1>
                         </button>
 
                         {/* Search and Favorites */}
                         <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center sm:space-x-4 mt-3 sm:mt-0">
-                            <div className="w-full sm:max-w-xs lg:max-w-sm mb-2 sm:mb-0">
+                            {/* Updated SearchBar container: removed padding p-1 */}
+                            <div className="w-full sm:max-w-xs lg:max-w-sm mb-2 sm:mb-0 bg-white rounded-md shadow">
                                 <SearchBar
                                     googleLoaded={googleLoaded}
                                     onSelectPlace={handlePlaceSelect}
@@ -81,8 +81,8 @@ export default function App() {
                             </div>
                             <FavoritesDropdown
                                 favorites={favorites}
-                                selectedPlace={selectedPlace} // Pass selectedPlace
-                                onSelectFavorite={handlePlaceSelect} // Changed from handleSelectFavorite
+                                selectedPlace={selectedPlace}
+                                onSelectFavorite={handlePlaceSelect}
                                 onAddFavorite={handleAddFavorite}
                                 onRemoveFavorite={handleRemoveFavorite}
                             />
@@ -94,6 +94,7 @@ export default function App() {
             {/* 3. Main Content */}
             <main className="flex-grow pt-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 {!selectedPlace ? (
+                    // ... Welcome message styling ...
                     <div className="mt-12 text-center text-gray-700 p-8 sm:p-12 bg-white rounded-xl shadow-xl flex flex-col items-center">
                         <img
                             src={`${process.env.PUBLIC_URL}/weather-icons/partly-cloudy-day.svg`}
@@ -119,7 +120,7 @@ export default function App() {
             </main>
 
             {/* Footer */}
-            <footer className="bg-white py-4 sm:py-5 text-center text-gray-500 text-sm border-t border-gray-200">
+            <footer className="bg-gray-800 py-4 sm:py-5 text-center text-gray-300 text-sm border-t border-gray-700"> {/* Darker footer */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <p>&copy; {new Date().getFullYear()} WaypointWeather. Powered by NWS & Google Maps Places API.</p>
                 </div>

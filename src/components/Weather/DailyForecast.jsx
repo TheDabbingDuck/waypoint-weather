@@ -1,5 +1,5 @@
 // src/components/Weather/DailyForecast.jsx
-import React from "react";
+import React, { useState } from "react";
 import { getWeatherIcon } from "../../utils/weatherIcons";
 
 /**
@@ -78,6 +78,80 @@ function parseRainfallAmount(detailedForecast) {
     return null;
 }
 
+// Individual Card Component for Daily Forecast
+function DailyCard({ day, index, lowTemp, nightShortForecast }) {
+    const [isFlipped, setIsFlipped] = useState(false);
+    const {
+        name,
+        startTime,
+        temperature,
+        temperatureUnit,
+        probabilityOfPrecipitation,
+        detailedForecast,
+        windSpeed,
+        windDirection,
+        shortForecast,
+    } = day;
+
+    const weatherIcon = getWeatherIcon(shortForecast);
+    const displayDayName = formatDayName(name, startTime);
+    const pop = probabilityOfPrecipitation?.value;
+    const rainfall = parseRainfallAmount(detailedForecast);
+
+    return (
+        <div
+            className={`flip-card-container group rounded-xl shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 ${isFlipped ? 'flipped' : ''} bg-white`}
+            onClick={() => setIsFlipped(!isFlipped)}
+            style={{ animation: `fadeInUp 0.5s ${index * 0.07}s ease-out backwards`, minHeight: '20rem' }} // Reduced minHeight slightly
+        >
+            <div className="flip-card w-full h-full">
+                {/* Front of the Card: Name, Icon, High Temp, DetailedSummary (day.detailedForecast) */}
+                <div className="flip-card-front p-4 flex flex-col items-center text-center justify-between">
+                    <div className="flex flex-col items-center text-center">
+                        <span className="text-lg font-semibold text-gray-700 mb-1">{displayDayName}</span>
+                        <img
+                            src={weatherIcon}
+                            alt={shortForecast}
+                            // Reduced icon size
+                            className="w-16 h-16 sm:w-20 sm:h-20 my-1" // Was w-20 h-20 sm:w-24 sm:h-24 my-2
+                        />
+                        <span className="text-3xl font-bold text-blue-600 mt-1"> {/* Adjusted margin */}
+                            {temperature}°<span className="text-xl">{temperatureUnit}</span>
+                        </span>
+                        <p className="text-sm text-gray-600 mt-1 px-1 leading-tight max-w-xs">{detailedForecast}</p> {/* Adjusted margin */}
+                    </div>
+                    <span className="text-xxs text-gray-500 mt-1 pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">See More</span> {/* Adjusted margin */}
+                </div>
+
+                {/* Back of the Card: Name, Low Temp, Night Forecast, PoP, Rainfall, Wind */}
+                <div className="flip-card-back p-4 flex flex-col items-center text-center justify-between">
+                    <div className="flex flex-col items-center text-center w-full">
+                        <span className="text-lg font-semibold text-gray-700 mb-2">{displayDayName}</span>
+                        {lowTemp !== null && (
+                            <p className="text-base text-gray-700">Low: {lowTemp}°{temperatureUnit}</p>
+                        )}
+                        {nightShortForecast && (
+                            <p className="text-sm text-gray-600 mt-1">Night: {nightShortForecast}</p>
+                        )}
+                        <div className="mt-3 text-xs text-gray-600 space-y-1 text-left w-full px-2"> {/* Adjusted margin */}
+                            {pop !== null && pop >= 0 && (
+                                <p><span className="font-medium">Precip (Day):</span> {pop}%</p>
+                            )}
+                            {rainfall && (
+                                <p><span className="font-medium">Rainfall (Day):</span> {rainfall}</p>
+                            )}
+                            {windSpeed && (
+                                <p><span className="font-medium">Wind (Day):</span> {windSpeed} {windDirection || ""}</p>
+                            )}
+                        </div>
+                    </div>
+                    <span className="text-xxs text-gray-500 mt-auto pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">See Less</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 /**
  * Renders a grid of daily forecast cards.
  * Expects `data` to be an array of daily period objects from NWS.
@@ -91,53 +165,19 @@ export default function DailyForecast({data}) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
             {dayPeriods.map((day, index) => {
-                const {
-                    number,
-                    name, // Original NWS period name
-                    startTime, // Need startTime for formatting
-                    temperature,
-                    temperatureUnit,
-                    probabilityOfPrecipitation, // Added
-                    detailedForecast, // Added for rainfall amount
-                    windSpeed,
-                    windDirection,
-                    shortForecast,
-                } = day;
-
-                // Get custom weather icon based on the forecast description
-                const weatherIcon = getWeatherIcon(shortForecast);
-                const displayDayName = formatDayName(name, startTime);
-                const pop = probabilityOfPrecipitation?.value;
-                const rainfall = parseRainfallAmount(detailedForecast);
+                // Find the corresponding night period for low temperature and night forecast
+                const nightPeriod = data.find(p => p.number === day.number + 1 && !p.isDaytime);
+                const lowTemp = nightPeriod ? nightPeriod.temperature : null;
+                const nightShortForecast = nightPeriod ? nightPeriod.shortForecast : null;
 
                 return (
-                    <div
-                        key={number || `daily-${index}`}
-                        className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                        style={{ animation: `fadeInUp 0.5s ${index * 0.07}s ease-out backwards` }} // Staggered animation
-                    >
-                        <span className="text-lg font-semibold text-gray-700 mb-2">{displayDayName}</span>
-                        <img
-                            src={weatherIcon}
-                            alt={shortForecast}
-                            className="w-20 h-20 sm:w-24 sm:h-24 my-2"
-                        />
-                        <span className="text-3xl font-bold text-blue-600 mt-2">
-                            {temperature}°<span className="text-xl">{temperatureUnit}</span>
-                        </span>
-                        {pop !== null && pop >= 0 && (
-                            <span className="text-sm text-blue-500 mt-1.5">Precipitation Chance: {pop}%</span>
-                        )}
-                        <span className="text-sm text-gray-600 mt-1 px-2 leading-tight">{shortForecast}</span>
-                        {rainfall && (
-                            <span className="text-xs text-gray-500 mt-1">Rainfall: {rainfall}</span>
-                        )}
-                        {windSpeed && (
-                            <span className="text-xs text-gray-500 mt-1.5">
-                                {windSpeed.replace(/[^0-9a-zA-Zto\s]/g, "")} {windDirection || ""}
-                            </span>
-                        )}
-                    </div>
+                    <DailyCard
+                        key={day.number || `daily-${index}`}
+                        day={day}
+                        index={index}
+                        lowTemp={lowTemp}
+                        nightShortForecast={nightShortForecast}
+                    />
                 );
             })}
         </div>
